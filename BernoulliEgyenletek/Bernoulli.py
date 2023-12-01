@@ -11,7 +11,7 @@ class SideNoteBubble(VGroup):
 
         # Create a custom text bubble with an arrow
         self.bubble = RoundedRectangle(
-            width=len(content) * 0.2 + 0.5,
+            width=len(content) * 0.15,
             height=0.5,
             corner_radius=0.25,
             fill_color=WHITE,
@@ -22,7 +22,7 @@ class SideNoteBubble(VGroup):
         self.bubble.next_to(position, DOWN, buff=0.2)
 
         # Add content to the bubble
-        text = Text(content, color=BLACK, font_size=28)
+        text = MathTex(r"\text{" + content + "}", color=BLACK, font_size=28)
         text.move_to(self.bubble.get_center())
         self.add(self.bubble, text)
 
@@ -36,28 +36,25 @@ class SideNoteBubble(VGroup):
 class BernoulliEquation(Scene):
     def construct(self):
         # Introduction
-        title = MathTex(r"\text{Bernoulli egyenletek megoldása}", font_size=80).to_edge(
-            UP, buff=0.5
-        )
-        subtitle = MathTex(r"\text{Lépések}", font_size=72)
+        # Variables
+        title = MathTex(r"\text{Bernoulli egyenletek megoldása}", font_size=80)
 
+        # Animations
         self.play(Write(title))
         self.wait(SMALL_WAIT_TIME)
         self.play(FadeOut(title))
 
-        self.play(Write(subtitle))
-        self.wait(SMALL_WAIT_TIME)
-
-        self.play(FadeOut(subtitle))
         # First step
-        first_step_title = MathTex(r"\text{1. Standard forma felírása:}").to_edge(
-            UP, buff=0.5
+        # Variables
+        subtitle = MathTex(r"\text{Lépések:}", font_size=72).to_edge(UP, buff=0.5)
+
+        self.play(Write(subtitle))
+
+        first_step_title = MathTex(r"\text{1. Standard forma felírása:}").next_to(
+            subtitle, DOWN, buff=0.5
         )
-        self.play(Write(first_step_title))
 
-        self.wait(SMALL_WAIT_TIME)
-
-        equation = MathTex(r"y'", r"+", r"P(x)y", r"=", r" Q(x)", r"y^n")
+        equation = MathTex(r"y'", r"+", r"P(x)", r"y", r"=", r" Q(x)", r"y^n")
         equation.next_to(first_step_title, DOWN)
         n_value = MathTex(
             r"\forall n \in \mathbb{R} \backslash \{",
@@ -68,21 +65,12 @@ class BernoulliEquation(Scene):
             font_size=40,
         )
         n_value.next_to(equation, RIGHT, buff=0.5)
-        self.play(Write(equation))
-        self.play(Write(n_value))
 
-        # Underline P(x) and Q(x)
         underline_p = Underline(equation.submobjects[2], color=BLUE)
-        underline_q = Underline(equation.submobjects[4], color=BLUE)
-        self.play(Create(underline_p), Create(underline_q))
+        underline_q = Underline(equation.submobjects[5], color=BLUE)
 
-        self.wait(SMALL_WAIT_TIME)
+        rect_around_n = SurroundingRectangle(equation.submobjects[6], color=PURPLE_B)
 
-        # Draw a rectangle around y^n
-        rect_around_n = SurroundingRectangle(equation.submobjects[5], color=PURPLE_B)
-        self.play(Create(rect_around_n))
-
-        # Draw an arrow to 0 and write a text "lineáris egyenlet"
         arrow_to_0 = Arrow(
             n_value.submobjects[1].get_right() + UP,
             n_value.submobjects[1].get_top(),
@@ -91,9 +79,7 @@ class BernoulliEquation(Scene):
         text_0 = Text("lineáris egyenlet", color=PURPLE, font_size=15).next_to(
             arrow_to_0, LEFT, buff=0
         )
-        self.play(Create(arrow_to_0), Write(text_0))
 
-        # Draw an arrow to 1 and write a text "szétválasztható változójú egyenlet"
         arrow_to_1 = Arrow(
             n_value.submobjects[3].get_right() + UP * 2,
             n_value.submobjects[3].get_top(),
@@ -102,38 +88,62 @@ class BernoulliEquation(Scene):
         text_1 = Text(
             "szétválasztható változójú egyenlet", color=PURPLE_C, font_size=15
         ).next_to(arrow_to_1, LEFT)
+
+        # Animations
+        self.play(Write(first_step_title))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(equation))
+        self.play(Write(n_value))
+
+        # Underline P(x) and Q(x)
+        self.play(Create(underline_p), Create(underline_q))
+        self.wait(SMALL_WAIT_TIME)
+
+        # Draw a rectangle around y^n
+        self.play(Create(rect_around_n))
+
+        # Draw an arrow to 0 and write a text "lineáris egyenlet"
+        self.play(Create(arrow_to_0), Write(text_0))
+
+        # Draw an arrow to 1 and write a text "szétválasztható változójú egyenlet"
         self.play(Create(arrow_to_1), Write(text_1))
         self.wait(STANDARD_WAIT_TIME)
 
         # Second step
+        # Variables
         second_step_title = MathTex(
             r"\text{2. Integrál faktor meghatározása:}",
         ).next_to(equation, DOWN, buff=0.5)
 
-        self.play(Write(second_step_title))
-
         integrating_factor = MathTex(r"I(x) = e^{\int [1-n]P(x)dx}")
         integrating_factor.next_to(second_step_title, DOWN)
+
+        # Animations
+        self.play(Write(second_step_title))
         self.play(Write(integrating_factor))
 
         self.wait(STANDARD_WAIT_TIME)
 
         # Third step
+        # Variables
         third_step_title = MathTex(r"\text{3. Az egyenlet megoldása }").next_to(
             integrating_factor, DOWN, buff=0.5
         )
-        self.play(Write(third_step_title))
 
         solution_equation = MathTex(
-            r"y^{1-n} = \left[ \frac{1}{I(x)} \int [1-n]Q(x)I(x)dx +c\right]"
+            r"y^{1-n} =  \frac{1}{I(x)} \left[\int [1-n]Q(x)I(x)dx +c\right]"
         )
         solution_equation.next_to(third_step_title, DOWN)
+
+        # Animations
+        self.play(Write(third_step_title))
         self.play(Write(solution_equation))
 
         self.wait(LONGER_WAIT_TIME)
 
         # Fade out
         self.play(
+            FadeOut(subtitle),
             FadeOut(first_step_title),
             FadeOut(equation),
             FadeOut(n_value),
@@ -151,8 +161,8 @@ class BernoulliEquation(Scene):
         )
 
         # Example
+        # Variables
         example_title = MathTex(r"\text{Példa:}").to_edge(UP, buff=0.5)
-        self.play(Write(example_title))
 
         # y' + \left( \frac{2}{x} \right) y = x^2y^3
         example_equation = MathTex(
@@ -186,13 +196,14 @@ class BernoulliEquation(Scene):
             standard_form_reminder.submobjects[2], color=RED
         )
         underline_q_standard_form = Underline(
-            standard_form_reminder.submobjects[4], color=BLUE
+            standard_form_reminder.submobjects[5], color=BLUE
         )
         rectangle_around_n_standard_form = SurroundingRectangle(
-            standard_form_reminder.submobjects[5], color=PURPLE_B
+            standard_form_reminder.submobjects[6], color=PURPLE_B
         )
 
         # Play the animations
+        self.play(Write(example_title))
         self.play(Write(example_equation))
         self.wait(SMALL_WAIT_TIME)
 
@@ -230,4 +241,237 @@ class BernoulliEquation(Scene):
         self.play(Write(example_q))
         self.play(Write(example_n))
 
+        self.wait(STANDARD_WAIT_TIME)
+
+        # Calculate the integrating factor
+        # Move the example_p, example_q and example_n to the top
+        example_p.generate_target()
+        example_q.generate_target()
+        example_n.generate_target()
+        example_p.target.to_edge(UP)
+        example_q.target.next_to(example_p.target, DOWN, buff=0.5)
+        example_n.target.next_to(example_q.target, DOWN, buff=0.5)
+
+        # Side note bubble
+        side_note_bubble = SideNoteBubble(
+            content="Fel kell írni az integrál faktort a képlet alapján",
+            position=example_n.target.get_bottom(),
+        )
+
+        # Integrating factor reminder
+        integrating_factor_reminder = integrating_factor.copy().next_to(
+            side_note_bubble, DOWN
+        )
+
+        ex_integrating_factor = MathTex(r"= e^{\int [1-3]\frac{2}{x}dx}")
+        ex_integrating_factor.next_to(
+            integrating_factor_reminder, DOWN + LEFT + 0.25, buff=0.5
+        )
+
+        ex_integrating_factor_s2 = MathTex(r"= e^{\int \left(-2\right)\frac{2}{x}dx}")
+        ex_integrating_factor_s2.next_to(ex_integrating_factor, RIGHT, buff=0.5)
+
+        ex_integrating_factor_s3 = MathTex(r"= e^{-4 \int \frac{1}{x}dx}")
+        ex_integrating_factor_s3.next_to(ex_integrating_factor_s2, RIGHT, buff=0.5)
+
+        ex_integrating_factor_s4 = MathTex(r"= e^{", r"-4", r" \cdot", r"\ln x}")
+        ex_integrating_factor_s4.next_to(ex_integrating_factor_s3, RIGHT, buff=0.5)
+
+        # curved arrow from the top -4 to ln x
+        curved_arrow = CurvedArrow(
+            ex_integrating_factor_s4.submobjects[1].get_center() + 0.25 * UP,
+            ex_integrating_factor_s4.submobjects[3].get_center() + 0.25 * UP,
+            radius=-0.75,
+            color=RED,
+        )
+
+        ex_integrating_factor_s5 = MathTex(r"= e^{\ln x^{-4}}")
+        ex_integrating_factor_s5.next_to(ex_integrating_factor, DOWN, buff=0.5)
+
+        ex_integrating_factor_s6 = MathTex(r"= x^{-4}")
+        ex_integrating_factor_s6.next_to(ex_integrating_factor_s5, RIGHT, buff=0.5)
+
+        ex_integrating_factor_s7 = MathTex(r"= \frac{1}{x^4}")
+        ex_integrating_factor_s7.next_to(ex_integrating_factor_s6, RIGHT, buff=0.5)
+
+        # Animations
+        self.play(FadeOut(example_equation), FadeOut(example_title))
+        self.play(
+            MoveToTarget(example_p), MoveToTarget(example_q), MoveToTarget(example_n)
+        )
+
+        self.play(side_note_bubble.create_animation())
+        self.play(Write(integrating_factor_reminder))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_integrating_factor))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_integrating_factor_s2))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_integrating_factor_s3))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_integrating_factor_s4))
+        self.play(Create(curved_arrow))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_integrating_factor_s5))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_integrating_factor_s6))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_integrating_factor_s7))
+        self.wait(STANDARD_WAIT_TIME)
+
+        self.play(
+            side_note_bubble.fade_out_animation(),
+            FadeOut(integrating_factor_reminder),
+            FadeOut(ex_integrating_factor),
+            FadeOut(ex_integrating_factor_s2),
+            FadeOut(ex_integrating_factor_s3),
+            FadeOut(ex_integrating_factor_s4),
+            FadeOut(curved_arrow),
+            FadeOut(ex_integrating_factor_s5),
+            FadeOut(ex_integrating_factor_s6),
+            FadeOut(ex_integrating_factor_s7),
+        )
+        # Rearranging the position of the example_p, example_q
+        # and example_n with the addition of I(x) = 1/x^4 in a 2x2 matrix style
+        example_p.generate_target()
+        example_q.generate_target()
+        example_n.generate_target()
+        example_int_factor = MathTex(r"I(x) = \frac{1}{x^4}").next_to(
+            example_q.target, DOWN, buff=0.5
+        )
+
+        # Group them into a 2x2 matrix style
+        example_group = VGroup(
+            example_p.target, example_q.target, example_n.target, example_int_factor
+        )
+        example_group.arrange_in_grid(rows=2, cols=2, buff=0.5)
+        example_group.move_to(UP * 2)
+
+        # Animations
+        self.play(
+            MoveToTarget(example_p),
+            MoveToTarget(example_q),
+            MoveToTarget(example_n),
+            Write(example_int_factor),
+        )
+        self.wait(SMALL_WAIT_TIME)
+
+        # Side note bubble
+        side_note_bubble = SideNoteBubble(
+            content="Használva a megoldás képletét, felírhatjuk az egyenlet megoldását",
+            position=example_group.get_bottom(),
+        )
+
+        ex_solution_equation = solution_equation.copy().next_to(side_note_bubble, DOWN)
+        ex_solution_eq_s2 = MathTex(
+            r"y^{1-3} = \frac{1}{\frac{1}{x^4}} \left[\int [1-3]x^2 \frac{1}{x^4}dx +c\right]"
+        ).next_to(ex_solution_equation, DOWN, buff=0.5)
+
+        # Move the ex solution equations to the top
+        ex_solution_equation.generate_target()
+        ex_solution_eq_s2.generate_target()
+        ex_solution_equation.target.to_edge(UP)
+        ex_solution_eq_s2.target.next_to(ex_solution_equation.target, DOWN, buff=0.5)
+
+        ex_solution_eq_s3 = MathTex(
+            r"y^{-2} = x^4 \left[\int -2 \frac{1}{x^2}dx +c\right]"
+        ).next_to(ex_solution_eq_s2.target, DOWN, buff=0.5)
+        ex_solution_eq_s3.shift(LEFT * 2)
+        ex_solution_eq_s4 = MathTex(r"= x^4 \left[\int -2 x^{-2} dx +c\right]").next_to(
+            ex_solution_eq_s3, RIGHT, buff=0.5
+        )
+
+        ex_solution_eq_s5 = MathTex(
+            r"y^{-2} = x^4 \left[\frac{-2 x^{-1}}{-1} +c\right]"
+        ).next_to(ex_solution_eq_s3, DOWN, buff=0.5)
+
+        left_right_arrow = MathTex(r"\Leftrightarrow").next_to(
+            ex_solution_eq_s5, RIGHT, buff=0.5
+        )
+
+        ex_solution_eq_s6 = MathTex(
+            r"y^{-2}",
+            r" =",
+            r" x^4",
+            r" \left[\frac{2}{x}",
+            r" +",
+            r"c\right]",
+        ).next_to(ex_solution_eq_s4, DOWN, buff=0.5)
+        curved_arrow2 = CurvedArrow(
+            ex_solution_eq_s6.submobjects[2].get_center() + 0.25 * UP,
+            ex_solution_eq_s6.submobjects[3].get_center() + 0.25 * UP,
+            radius=-1,
+            color=BLUE,
+        )
+        curved_arrow3 = CurvedArrow(
+            ex_solution_eq_s6.submobjects[2].get_center() + 0.25 * UP,
+            ex_solution_eq_s6.submobjects[5].get_center() + 0.25 * UP,
+            radius=-2,
+            color=BLUE,
+        )
+
+        # Move the ex_solution_eq_s6 to the top
+        ex_solution_eq_s6.generate_target()
+        ex_solution_eq_s6.target.move_to(ORIGIN).to_edge(UP)
+
+        ex_solution_eq_s7 = MathTex(r"y^{-2} = 2 \cdot x^{3} + c \cdot x^4").next_to(
+            ex_solution_eq_s6.target, DOWN, buff=0.5
+        )
+
+        side_note_bubble2 = SideNoteBubble(
+            content="A megoldás tehát:",
+            position=ex_solution_eq_s7.get_bottom(),
+        )
+
+        ex_solution_eq_s8 = MathTex(
+            r"\frac{1}{y^2} = 2 \cdot x^{3} + c \cdot x^4"
+        ).next_to(side_note_bubble2, DOWN, buff=0.5)
+
+        # Surrounding rectangle around the ex_solution_eq_s8
+        rect_around_ex_solution_eq_s8 = SurroundingRectangle(
+            ex_solution_eq_s8, color=RED
+        )
+
+        # Animations
+        self.play(side_note_bubble.create_animation())
+        self.play(Write(ex_solution_equation))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_solution_eq_s2))
+        self.play(
+            FadeOut(example_p),
+            FadeOut(example_q),
+            FadeOut(example_n),
+            FadeOut(example_int_factor),
+            FadeOut(side_note_bubble),
+        )
+        self.play(MoveToTarget(ex_solution_equation), MoveToTarget(ex_solution_eq_s2))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_solution_eq_s3))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_solution_eq_s4))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_solution_eq_s5))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(left_right_arrow))
+        self.play(Write(ex_solution_eq_s6))
+        self.play(Create(curved_arrow2), Create(curved_arrow3))
+        self.wait(SMALL_WAIT_TIME)
+
+        self.play(
+            FadeOut(ex_solution_equation),
+            FadeOut(ex_solution_eq_s2),
+            FadeOut(ex_solution_eq_s3),
+            FadeOut(ex_solution_eq_s4),
+            FadeOut(ex_solution_eq_s5),
+            FadeOut(left_right_arrow),
+            FadeOut(curved_arrow2),
+            FadeOut(curved_arrow3),
+        )
+
+        self.play(MoveToTarget(ex_solution_eq_s6))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(ex_solution_eq_s7))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(side_note_bubble2.create_animation())
+        self.play(Write(ex_solution_eq_s8), Create(rect_around_ex_solution_eq_s8))
         self.wait(STANDARD_WAIT_TIME)
