@@ -358,7 +358,7 @@ class BernoulliEquation(Scene):
 
         # Side note bubble
         side_note_bubble = SideNoteBubble(
-            content="Használva a megoldás képletét, felírhatjuk az egyenlet megoldását",
+            content="Használva a megoldási képletet, felírhatjuk az egyenlet megoldását",
             position=example_group.get_bottom(),
         )
 
@@ -511,7 +511,6 @@ class BernoulliEquation(Scene):
         second_example_n = MathTex(r"n = 2").next_to(second_example_qx, DOWN, buff=0.5)
 
         # Move px, qx and n to the top
-
         second_example_px.generate_target()
         second_example_qx.generate_target()
         second_example_n.generate_target()
@@ -522,13 +521,136 @@ class BernoulliEquation(Scene):
             second_example_n.target,
         )
 
-        second_example_group.arrange_in_grid(rows=2, cols=2, buff=0.5)
-        second_example_group.move_to(UP * 2)
+        second_example_group.arrange_in_grid(rows=2, cols=2, buff=0.5).to_edge(UP)
 
         side_note_bubble3 = SideNoteBubble(
-            content="Ki kell számolni az integrál faktort",
+            content="Ki kell számolni az integrál faktort", position=ORIGIN
+        )
+
+        side_note_bubble3.shift(UP * 0.5)
+
+        integrating_factor_reminder2 = integrating_factor.copy().next_to(
+            side_note_bubble3, DOWN, buff=0.5
+        )
+
+        integrating_factor_reminder2.to_edge(LEFT, buff=2)
+
+        int_fact_s1 = MathTex(r"= e^{\int [1-2]3x^2dx}").next_to(
+            integrating_factor_reminder2, RIGHT, buff=0.5
+        )
+        int_fact_s2 = MathTex(r"= e^{-3 \int x^2dx}").next_to(int_fact_s1, RIGHT)
+        int_fact_s3 = MathTex(r"= e^{-3 \cdot \frac{x^3}{3}}").next_to(
+            integrating_factor_reminder2, DOWN, buff=0.5
+        )
+        int_fact_s4 = MathTex(r"= e^{-x^3}").next_to(int_fact_s3, RIGHT, buff=0.5)
+
+        # Put the int_fact_s4 into the vgroup and move it to the top
+        final_int_fact = MathTex(r"I(x) = e^{-x^3}")
+        second_example_group.add(final_int_fact)
+        second_example_group.arrange_in_grid(rows=2, cols=2, buff=0.5)
+
+        side_note_bubble4 = SideNoteBubble(
+            content="Használva a megoldási képletet, felírhatjuk az egyenlet megoldását",
             position=second_example_group.get_bottom(),
         )
+
+        solution_equation_reminder = solution_equation.copy().next_to(
+            side_note_bubble4, DOWN, buff=0.5
+        )
+
+        sol_eq_s1 = MathTex(
+            r"y^{1-2} = \frac{1}{e^{-x^3}} \left[",
+            r"\int [1-2]4x^2e^{-x^3}dx",
+            r" +c\right]",
+        ).next_to(solution_equation_reminder, DOWN, buff=0.5)
+
+        # Move sol_eq_s1 to the top
+        sol_eq_s1.generate_target()
+        sol_eq_s1.target.move_to(ORIGIN).to_edge(UP)
+
+        sol_eq_sub_eq = MathTex(r"\int -4x^2e^{-x^3}dx").next_to(sol_eq_s1.target, DOWN)
+        sol_eq_sub_eq.shift(LEFT * 2)
+
+        currved_arrow_int = CurvedArrow(
+            sol_eq_s1.target.submobjects[1].get_center(),
+            sol_eq_sub_eq.get_center(),
+            radius=-2,
+            color=RED,
+        )
+
+        sol_eq_sub_eq2 = MathTex(r"u = -x^3").next_to(sol_eq_sub_eq, RIGHT, buff=1)
+        sol_eq_sub_eq3 = MathTex(r"du = -3x^2dx").next_to(sol_eq_sub_eq, DOWN, buff=0.5)
+        sol_eq_sub_eq4 = MathTex(r"dx = \frac{du}{-3x^2}").next_to(
+            sol_eq_sub_eq2, DOWN, buff=0.5
+        )
+
+        sol_eq_sub_eq5 = MathTex(r"\int -4x^2e^u \frac{du}{-3x^2}")
+        sol_eq_sub_eq5.next_to(sol_eq_sub_eq4, DOWN, buff=0.5)
+        sol_eq_sub_eq5.shift(LEFT * 4)
+
+        sol_eq_sub_eq6 = MathTex(r"=\frac{4}{3} \int e^u du")
+        sol_eq_sub_eq6.next_to(sol_eq_sub_eq5, RIGHT, buff=0.5)
+
+        sol_eq_sub_eq7 = MathTex(r"= \frac{4}{3} e", r"^u")
+        sol_eq_sub_eq7.next_to(sol_eq_sub_eq6, RIGHT, buff=0.5)
+
+        sol_eq_sub_eq8 = MathTex(r"= \frac{4}{3} e^{-x^3}")
+        sol_eq_sub_eq8.next_to(sol_eq_sub_eq7, DOWN, buff=0.5)
+
+        currved_arrow4 = CurvedArrow(
+            sol_eq_sub_eq2.get_center(),
+            sol_eq_sub_eq7.submobjects[1].get_center(),
+            radius=-6,
+            color=RED,
+        )
+
+        rectangle_around_eq8 = SurroundingRectangle(sol_eq_sub_eq8, color=RED)
+        rectangle_around_qx_integral = SurroundingRectangle(
+            sol_eq_s1.target.submobjects[1], color=RED
+        )
+
+        side_note_bubble5 = SideNoteBubble(
+            content="Ezután behelyettesítjük az kiszámolt integrált...",
+            position=sol_eq_sub_eq5.get_bottom() + DOWN * 0.5,
+        )
+
+        sol_eq_s2 = MathTex(
+            r"y^{-1} = \frac{1}{e^{-x^3}} \left[",
+            r"\frac{4}{3} e^{-x^3}",
+            r" +c\right]",
+        ).next_to(sol_eq_s1.target, DOWN, buff=0.5)
+
+        sol_eq_s3 = MathTex(
+            r"y^{-1} = \frac{4}{3} + c \cdot e^{x^3}",
+        ).next_to(sol_eq_s2, DOWN, buff=0.5)
+
+        sol_eq_s4 = MathTex(
+            r"\frac{1}{y} = \frac{4}{3} + c \cdot e^{x^3}",
+        ).next_to(sol_eq_s3, DOWN, buff=0.5)
+
+        # Move sol_eq_s4 to the top
+        sol_eq_s4.generate_target()
+        sol_eq_s4.target.move_to(ORIGIN).to_edge(UP)
+
+        sol_eq_s5 = MathTex(
+            r"y = \frac{1}{\frac{4}{3} + c \cdot e^{x^3}}",
+        ).next_to(sol_eq_s4.target, DOWN, buff=0.5)
+
+        side_note_bubble6 = SideNoteBubble(
+            content="Beszorozzuk a számlálót és a nevezőt is 3-mal",
+            position=sol_eq_s5.get_bottom(),
+        )
+
+        sol_eq_s6 = MathTex(
+            r"y = \frac{3}{4 + 3c \cdot e^{x^3}}",
+        ).next_to(side_note_bubble6, DOWN, buff=0.5)
+
+        rectangle_final = SurroundingRectangle(sol_eq_s6, color=RED)
+        side_note_bubble7 = SideNoteBubble(
+            content="Ez lesz a végső megoldás", position=rectangle_final.get_bottom()
+        )
+
+        thanks = MathTex(r"\text{Köszönöm a figyelmet!}", font_size=80)
 
         # Animations
         self.play(Write(second_example_title))
@@ -563,3 +685,115 @@ class BernoulliEquation(Scene):
         self.wait(SMALL_WAIT_TIME)
         self.play(side_note_bubble3.create_animation())
         self.wait(SMALL_WAIT_TIME)
+        self.play(Write(integrating_factor_reminder2))
+        self.play(Write(int_fact_s1))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(int_fact_s2))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(int_fact_s3))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(int_fact_s4))
+        self.wait(STANDARD_WAIT_TIME)
+        self.play(
+            FadeOut(integrating_factor_reminder2),
+            FadeOut(int_fact_s1),
+            FadeOut(int_fact_s2),
+            FadeOut(int_fact_s3),
+            FadeOut(int_fact_s4),
+            Write(final_int_fact),
+        )
+        self.wait(SMALL_WAIT_TIME)
+        self.play(side_note_bubble3.fade_out_animation())
+        self.play(side_note_bubble4.create_animation())
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(solution_equation_reminder))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_s1))
+        self.wait(STANDARD_WAIT_TIME)
+
+        self.play(
+            FadeOut(second_example_px),
+            FadeOut(second_example_qx),
+            FadeOut(second_example_n),
+            FadeOut(final_int_fact),
+            FadeOut(side_note_bubble4),
+            FadeOut(solution_equation_reminder),
+            MoveToTarget(sol_eq_s1),
+        )
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_sub_eq))
+        self.play(Create(currved_arrow_int))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(FadeOut(currved_arrow_int))
+        self.play(Write(sol_eq_sub_eq2))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_sub_eq3))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_sub_eq4))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_sub_eq5))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_sub_eq6))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_sub_eq7))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Create(currved_arrow4))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_sub_eq8))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(FadeOut(currved_arrow4))
+
+        self.play(side_note_bubble5.create_animation())
+        self.play(Create(rectangle_around_eq8))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Create(rectangle_around_qx_integral))
+        self.wait(STANDARD_WAIT_TIME)
+        self.play(
+            FadeOut(sol_eq_sub_eq),
+            FadeOut(sol_eq_sub_eq2),
+            FadeOut(sol_eq_sub_eq3),
+            FadeOut(sol_eq_sub_eq4),
+            FadeOut(sol_eq_sub_eq5),
+            FadeOut(sol_eq_sub_eq6),
+            FadeOut(sol_eq_sub_eq7),
+            FadeOut(sol_eq_sub_eq8),
+            FadeOut(rectangle_around_eq8),
+            FadeOut(rectangle_around_qx_integral),
+            FadeOut(side_note_bubble5),
+        )
+        self.play(Write(sol_eq_s2))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_s3))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_s4))
+        self.wait(SMALL_WAIT_TIME)
+
+        self.play(
+            FadeOut(sol_eq_s1),
+            FadeOut(sol_eq_s2),
+            FadeOut(sol_eq_s3),
+            MoveToTarget(sol_eq_s4),
+        )
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_s5))
+        self.wait(STANDARD_WAIT_TIME)
+        self.play(side_note_bubble6.create_animation())
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(sol_eq_s6))
+        self.play(Create(rectangle_final))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(side_note_bubble7.create_animation())
+        self.wait(STANDARD_WAIT_TIME)
+
+        self.play(
+            FadeOut(sol_eq_s4),
+            FadeOut(sol_eq_s5),
+            FadeOut(sol_eq_s6),
+            FadeOut(rectangle_final),
+            FadeOut(side_note_bubble6),
+            FadeOut(side_note_bubble7),
+        )
+
+        self.play(Write(thanks))
+        self.wait(STANDARD_WAIT_TIME)
+        self.play(FadeOut(thanks))
