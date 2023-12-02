@@ -54,7 +54,7 @@ class BernoulliEquation(Scene):
             subtitle, DOWN, buff=0.5
         )
 
-        equation = MathTex(r"y'", r"+", r"P(x)", r"y", r"=", r" Q(x)", r"y^n")
+        equation = MathTex(r"y'", r"+", r"P(x)", r"y", r"=", r" Q(x)", r"y", r"^n")
         equation.next_to(first_step_title, DOWN)
         n_value = MathTex(
             r"\forall n \in \mathbb{R} \backslash \{",
@@ -66,10 +66,10 @@ class BernoulliEquation(Scene):
         )
         n_value.next_to(equation, RIGHT, buff=0.5)
 
-        underline_p = Underline(equation.submobjects[2], color=BLUE)
+        underline_p = Underline(equation.submobjects[2], color=RED)
         underline_q = Underline(equation.submobjects[5], color=BLUE)
 
-        rect_around_n = SurroundingRectangle(equation.submobjects[6], color=PURPLE_B)
+        rect_around_n = SurroundingRectangle(equation.submobjects[7], color=PURPLE_B)
 
         arrow_to_0 = Arrow(
             n_value.submobjects[1].get_right() + UP,
@@ -160,13 +160,13 @@ class BernoulliEquation(Scene):
             FadeOut(solution_equation),
         )
 
-        # Example
+        # First Example
         # Variables
-        example_title = MathTex(r"\text{Példa:}").to_edge(UP, buff=0.5)
+        example_title = MathTex(r"\text{1. Példa:}").to_edge(UP, buff=0.5)
 
         # y' + \left( \frac{2}{x} \right) y = x^2y^3
         example_equation = MathTex(
-            r"y'", r"+", r"\left( \frac{2}{x} \right)", r"y", r"=", r"x^2", r"y^3"
+            r"y'", r"+", r"\left( \frac{2}{x} \right)", r"y", r"=", r"x^2", r"y", r"^3"
         )
 
         example_p = MathTex(r"P(x) = \frac{2}{x}")
@@ -189,7 +189,7 @@ class BernoulliEquation(Scene):
         underline_p = Underline(example_equation.submobjects[2], color=RED)
         underline_q = Underline(example_equation.submobjects[5], color=BLUE)
         rectangle_around_n = SurroundingRectangle(
-            example_equation.submobjects[6], color=PURPLE_B
+            example_equation.submobjects[7], color=PURPLE_B
         )
 
         underline_p_standard_form = Underline(
@@ -199,7 +199,7 @@ class BernoulliEquation(Scene):
             standard_form_reminder.submobjects[5], color=BLUE
         )
         rectangle_around_n_standard_form = SurroundingRectangle(
-            standard_form_reminder.submobjects[6], color=PURPLE_B
+            standard_form_reminder.submobjects[7], color=PURPLE_B
         )
 
         # Play the animations
@@ -254,7 +254,7 @@ class BernoulliEquation(Scene):
 
         # Side note bubble
         side_note_bubble = SideNoteBubble(
-            content="Fel kell írni az integrál faktort a képlet alapján",
+            content="Ki kell számolni az integrál faktort a képlet alapján",
             position=example_n.target.get_bottom(),
         )
 
@@ -475,3 +475,91 @@ class BernoulliEquation(Scene):
         self.play(side_note_bubble2.create_animation())
         self.play(Write(ex_solution_eq_s8), Create(rect_around_ex_solution_eq_s8))
         self.wait(STANDARD_WAIT_TIME)
+
+        self.play(
+            side_note_bubble2.fade_out_animation(),
+            FadeOut(ex_solution_eq_s7),
+            FadeOut(ex_solution_eq_s6),
+            FadeOut(ex_solution_eq_s8),
+            FadeOut(rect_around_ex_solution_eq_s8),
+        )
+
+        self.wait(SMALL_WAIT_TIME)
+
+        # Second example
+        # Variables
+        second_example_title = MathTex(r"\text{2. Példa:}").to_edge(UP, buff=0.5)
+        second_example_equation = MathTex(
+            r"y'", r"+", r"3x^{2}", r"y", r"=", r"4x^{2}", r"y", r"^{2}"
+        ).next_to(second_example_title, DOWN, buff=0.5)
+        rectangle_around_px = SurroundingRectangle(
+            second_example_equation.submobjects[2], color=RED
+        )
+        rectangle_around_qx = SurroundingRectangle(
+            second_example_equation.submobjects[5], color=BLUE
+        )
+        rect_around_n_2 = SurroundingRectangle(
+            second_example_equation.submobjects[7], color=PURPLE_B
+        )
+
+        second_example_px = MathTex(r"P(x) = 3x^2").next_to(
+            second_example_equation, DOWN, buff=0.5
+        )
+        second_example_qx = MathTex(r"Q(x) = 4x^2").next_to(
+            second_example_px, DOWN, buff=0.5
+        )
+        second_example_n = MathTex(r"n = 2").next_to(second_example_qx, DOWN, buff=0.5)
+
+        # Move px, qx and n to the top
+
+        second_example_px.generate_target()
+        second_example_qx.generate_target()
+        second_example_n.generate_target()
+
+        second_example_group = VGroup(
+            second_example_px.target,
+            second_example_qx.target,
+            second_example_n.target,
+        )
+
+        second_example_group.arrange_in_grid(rows=2, cols=2, buff=0.5)
+        second_example_group.move_to(UP * 2)
+
+        side_note_bubble3 = SideNoteBubble(
+            content="Ki kell számolni az integrál faktort",
+            position=second_example_group.get_bottom(),
+        )
+
+        # Animations
+        self.play(Write(second_example_title))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Write(second_example_equation))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Create(rectangle_around_px))
+        self.play(Write(second_example_px))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Create(rectangle_around_qx))
+        self.play(Write(second_example_qx))
+        self.wait(SMALL_WAIT_TIME)
+        self.play(Create(rect_around_n_2))
+        self.play(Write(second_example_n))
+        self.wait(STANDARD_WAIT_TIME)
+
+        self.play(
+            FadeOut(second_example_equation),
+            FadeOut(second_example_title),
+            FadeOut(rectangle_around_px),
+            FadeOut(rectangle_around_qx),
+            FadeOut(rect_around_n_2),
+        )
+
+        # Put the example equation, px, qx and n into a group
+        # and move them to the top
+        self.play(
+            MoveToTarget(second_example_px),
+            MoveToTarget(second_example_qx),
+            MoveToTarget(second_example_n),
+        )
+        self.wait(SMALL_WAIT_TIME)
+        self.play(side_note_bubble3.create_animation())
+        self.wait(SMALL_WAIT_TIME)
