@@ -4,6 +4,13 @@ SMALL_WAIT_TIME = 1
 STANDARD_WAIT_TIME = 3
 LONGER_WAIT_TIME = 5
 
+global equation, integrating_factor, solution_equation
+equation = MathTex(r"y'", r"+", r"P(x)", r"y", r"=", r" Q(x)", r"y", r"^n")
+integrating_factor = MathTex(r"I(x) = e^{\int [1-n]P(x)dx}")
+solution_equation = MathTex(
+    r"y^{1-n} =  \frac{1}{I(x)} \left[\int [1-n]Q(x)I(x)dx +c\right]"
+)
+
 
 class SideNoteBubble(VGroup):
     def __init__(self, content, position, **kwargs):
@@ -33,9 +40,8 @@ class SideNoteBubble(VGroup):
         return FadeOut(self)
 
 
-class BernoulliEquation(Scene):
+class Introduction(Scene):
     def construct(self):
-        # Introduction
         # Variables
         title = MathTex(r"\text{Bernoulli egyenletek megoldása}", font_size=80)
 
@@ -44,6 +50,9 @@ class BernoulliEquation(Scene):
         self.wait(SMALL_WAIT_TIME)
         self.play(FadeOut(title))
 
+
+class Steps(Scene):
+    def construct(self):
         # First step
         # Variables
         subtitle = MathTex(r"\text{Lépések:}", font_size=72).to_edge(UP, buff=0.5)
@@ -160,7 +169,9 @@ class BernoulliEquation(Scene):
             FadeOut(solution_equation),
         )
 
-        # First Example
+
+class FirstExample:
+    def construct(self):
         # Variables
         example_title = MathTex(r"\text{1. Példa:}").to_edge(UP, buff=0.5)
 
@@ -486,7 +497,9 @@ class BernoulliEquation(Scene):
 
         self.wait(SMALL_WAIT_TIME)
 
-        # Second example
+
+class SecondExample:
+    def construct(self):
         # Variables
         second_example_title = MathTex(r"\text{2. Példa:}").to_edge(UP, buff=0.5)
         second_example_equation = MathTex(
@@ -650,8 +663,6 @@ class BernoulliEquation(Scene):
             content="Ez lesz a végső megoldás", position=rectangle_final.get_bottom()
         )
 
-        thanks = MathTex(r"\text{Köszönöm a figyelmet!}", font_size=80)
-
         # Animations
         self.play(Write(second_example_title))
         self.wait(SMALL_WAIT_TIME)
@@ -794,6 +805,28 @@ class BernoulliEquation(Scene):
             FadeOut(side_note_bubble7),
         )
 
+
+class Goodbye(Scene):
+    def construct(self):
+        thanks = MathTex(r"\text{Köszönöm a figyelmet!}", font_size=80)
         self.play(Write(thanks))
         self.wait(STANDARD_WAIT_TIME)
         self.play(FadeOut(thanks))
+
+
+class BernoulliEquation(Scene):
+    def construct(self):
+        # Introduction
+        Introduction.construct(self)
+
+        # Steps
+        Steps.construct(self)
+
+        # First Example
+        FirstExample.construct(self)
+
+        # Second example
+        SecondExample.construct(self)
+
+        # Goodbye
+        Goodbye.construct(self)
