@@ -170,8 +170,32 @@ class Steps(Scene):
         )
 
 
-class FirstExample:
+class FirstExample(Scene):
     def construct(self):
+        def plot_solution_equation(self):
+            # Define the solution equation function
+            def solution_equation_func(x):
+                c = 1
+                return 1 / (2 * x**3 + c * x**4)
+
+            # Plot the solution equation
+            solution_plot = FunctionGraph(
+                solution_equation_func,
+                x_range=[-8, 8],
+                color=RED,
+                stroke_width=4,
+            )
+            # solution_plot.move_to(ORIGIN)
+            self.wait(SMALL_WAIT_TIME)
+            return solution_plot
+
+        def animate_solution_plot(self, solution_plot):
+            # Add animations for the solution equation plot
+            self.play(Create(solution_plot))
+            self.wait(STANDARD_WAIT_TIME)
+            self.wait(STANDARD_WAIT_TIME)
+            self.play(FadeOut(solution_plot))
+
         # Variables
         example_title = MathTex(r"\text{1. Példa:}").to_edge(UP, buff=0.5)
 
@@ -497,8 +521,12 @@ class FirstExample:
 
         self.wait(SMALL_WAIT_TIME)
 
+        # Plot the solution equation
+        solution_plot = plot_solution_equation(self)
+        animate_solution_plot(self, solution_plot)
 
-class SecondExample:
+
+class SecondExample(Scene):
     def construct(self):
         # Variables
         second_example_title = MathTex(r"\text{2. Példa:}").to_edge(UP, buff=0.5)
